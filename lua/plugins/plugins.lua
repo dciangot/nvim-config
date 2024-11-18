@@ -7,6 +7,7 @@
 --
 
 return {
+  { "terrortylor/nvim-comment" },
   {
     "leoluz/nvim-dap-go",
   },

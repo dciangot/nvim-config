@@ -82,3 +82,5 @@ require("dap-go").setup({
     verbose = false,
   },
 })
+
+require("nvim_comment").setup()
