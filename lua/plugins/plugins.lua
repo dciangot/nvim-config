@@ -7,6 +7,16 @@
 --
 
 return {
+  -- {
+  --   "sphamba/smear-cursor.nvim",
+  --   opts = {},
+  -- },
+  -- {
+  --   "karb94/neoscroll.nvim",
+  --   config = function()
+  --     require("neoscroll").setup({})
+  --   end,
+  -- },
   { "terrortylor/nvim-comment" },
   {
     "leoluz/nvim-dap-go",
@@ -28,12 +38,42 @@ return {
     "yetone/avante.nvim",
     event = "VeryLazy",
     lazy = false,
-    version = false, -- set this if you want to always pull the latest change
+    version = "*", -- set this if you want to always pull the latest change
     opts = {
       -- add any opts here
-      provider = "openai",
-      openai = {
-        endpoint = "http://0.0.0.0:1234",
+      provider = "gemini",
+      gemini = {
+        -- endpoint = "https://generativelanguage.googleapis.com/v1beta/models",
+        model = "gemini-2.0-flash-lite",
+        timeout = 30000, -- Timeout in milliseconds
+        temperature = 0,
+        max_tokens = 20480,
+      },
+      windows = {
+        ---@type "right" | "left" | "top" | "bottom"
+        position = "right", -- the position of the sidebar
+        wrap = true, -- similar to vim.o.wrap
+        width = 30, -- default % based on available width
+        sidebar_header = {
+          enabled = true, -- true, false to enable/disable the header
+          align = "center", -- left, center, right for title
+          rounded = true,
+        },
+        input = {
+          prefix = "> ",
+          height = 8, -- Height of the input window in vertical layout
+        },
+        edit = {
+          border = "rounded",
+          start_insert = true, -- Start insert mode when opening the edit window
+        },
+        ask = {
+          floating = true, -- Open the 'AvanteAsk' prompt in a floating window
+          start_insert = true, -- Start insert mode when opening the ask window
+          border = "rounded",
+          ---@type "ours" | "theirs"
+          focus_on_apply = "ours", -- which diff to focus after applying
+        },
       },
     },
     -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
@@ -98,11 +138,9 @@ return {
     "mfussenegger/nvim-lint",
     enabled = true,
     opts = function(_, opts)
-      local linters = require("lint").linters
-
       local linters_by_ft = {
         protobuf = { "buf", "protolint" },
-        python = { "mypy" },
+        -- python = { "mypy" },
         sh = { "shellcheck" },
         sql = { "sqlfluff" },
         yaml = { "yamllint" },
@@ -130,6 +168,42 @@ return {
     opts = {
       servers = {
         omnisharp = { enabled = false },
+        pylsp = {
+          settings = {
+            pylsp = {
+              plugins = {
+                configurationSources = { "pycodestyle", "mccabe", "mypy", "ruff", "black", "isort", "rope_autoimport" },
+                jedi_completion = {
+                  enabled = true,
+                  eager = true,
+                  cache_for = { "numpy", "scipy", "matplotlib" },
+                },
+                jedi_definition = {
+                  enabled = true,
+                  follow_imports = true,
+                  follow_builtin_imports = true,
+                },
+                jedi_hover = { enabled = true },
+                jedi_references = { enabled = true },
+                jedi_signature_help = { enabled = true },
+                jedi_symbols = { enabled = true, all_scopes = true, include_import_symbols = true },
+                preload = { enabled = true, modules = { "numpy", "scipy", "matplotlib" } },
+                isort = { enabled = true },
+                black = { enabled = true },
+                spyder = { enabled = false },
+                mccabe = { enabled = false },
+                ruff = { enabled = false },
+                mypy = { enabled = false },
+                rope_autoimport = { enabled = true },
+                flake8 = { enabled = false, maxLineLength = 120 },
+                yapf = { enabled = false },
+                autopep8 = { enabled = false },
+                pycodestyle = { enabled = false, ignore = {} },
+                pyflakes = { enabled = false },
+              },
+            },
+          },
+        },
       },
     },
   },
@@ -218,6 +292,7 @@ return {
     "williamboman/mason.nvim",
     opts = {
       ensure_installed = {
+        "pyright",
         "golangci-lint",
         "stylua",
         "shellcheck",

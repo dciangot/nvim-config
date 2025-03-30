@@ -2,6 +2,7 @@
 require("config.lazy")
 
 local lspconfig = require("lspconfig")
+local configs = require("lspconfig/configs")
 
 -- setup helm-ls
 lspconfig.helm_ls.setup({
@@ -17,13 +18,44 @@ lspconfig.helm_ls.setup({
 -- setup yamlls
 lspconfig.yamlls.setup({})
 
+configs.golangcilsp = {
+  default_config = {
+    cmd = { "golangci-lint-langserver" },
+    root_dir = lspconfig.util.root_pattern(".git", "go.mod"),
+    init_options = {
+      command = {
+        "/opt/homebrew/bin/golangci-lint",
+        "run",
+        "--output.json.path",
+        "stdout",
+        "--show-stats=false",
+        "--issues-exit-code=1",
+      },
+    },
+  },
+}
+
+lspconfig.golangci_lint_ls.setup({
+  filetypes = { "go", "gomod" },
+  init_options = {
+    command = {
+      "/opt/homebrew/bin/golangci-lint",
+      "run",
+      "--output.json.path",
+      "stdout",
+      "--show-stats=false",
+      "--issues-exit-code=1",
+    },
+  },
+})
+
 local avante = require("avante")
 
 avante.setup({
-  provider = "openai",
-  openai = {
-    endpoint = "https://0.0.0.0:1234",
-    model = "rubra-meta-llama-3-8b-instruct.Q8_0.gguf",
+  provider = "gemini",
+  auto_suggestions_provider = "gemini",
+  web_search_engine = {
+    provider = "brave",
   },
 })
 
