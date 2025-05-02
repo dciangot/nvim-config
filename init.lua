@@ -53,6 +53,13 @@ local avante = require("avante")
 
 avante.setup({
   provider = "gemini",
+  gemini = {
+    endpoint = "https://generativelanguage.googleapis.com/v1beta/models",
+    model = "gemini-2.0-flash",
+    timeout = 30000, -- Timeout in milliseconds
+    temperature = 0,
+    max_tokens = 8192,
+  },
   auto_suggestions_provider = "gemini",
   web_search_engine = {
     provider = "brave",
